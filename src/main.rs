@@ -1,31 +1,51 @@
-use iced::executor;
-use iced::{Application, Command, Element, Settings, Theme};
+use iced::{Element, Sandbox, Settings, Color, Background} ;
+use iced::widget::{text_input,  container, };
+use iced::window;
 
 pub fn main() -> iced::Result {
-    Hello::run(Settings::default())
+    Tocomple::run(Settings {
+        window: window::Settings {
+            size: (400, 650),
+            ..window::Settings::default()
+        },
+        ..Settings::default()
+    })
 }
 
-struct Hello;
+#[derive(Default)]
+struct Tocomple {
+    // text_input_state: text_input::State,
+    input_text: String,
+}
+#[derive(Debug, Clone)]
+enum Message {
+    TextInputChanged(String),
+}
 
-impl Application for Hello {
-    type Executor = executor::Default;
-    type Flags = ();
-    type Message = ();
-    type Theme = Theme;
+impl Sandbox for Tocomple {
+    type Message = Message;
 
-    fn new(_flags: ()) -> (Hello, Command<Self::Message>) {
-        (Hello, Command::none())
+    fn new() -> Tocomple {
+        Tocomple::default()
     }
-
     fn title(&self) -> String {
-        String::from("A cool application")
+        String::from("kafka client")
     }
-
-    fn update(&mut self, _message: Self::Message) -> Command<Self::Message> {
-        Command::none()
+    fn update(&mut self, message: Message)   {
+        match message {
+            Message::TextInputChanged(input) => {
+                self.input_text = input;
+            }
+        }
     }
+    fn view(&self) -> Element<Message> {
+      let input = text_input(&self.input_text, "host").on_input(Message::TextInputChanged);
 
-    fn view(&self) -> Element<Self::Message> {
-        "Hello, world!".into()
+        container(input)
+            .width(200)
+            .height(100)
+            .center_x()
+            .center_y()
+            .into()
     }
 }
