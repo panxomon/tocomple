@@ -1,12 +1,13 @@
 use iced::{Element, Sandbox, Settings, Color, Background, Command, Length};
-use iced::widget::{text_input, container, scrollable};
+use iced::widget::{text_input, container, scrollable, Button, Text, Column, button};
+use iced::widget::TextInput;
 use iced::window;
 
 pub fn main() -> iced::Result {
     Tocomple::run(Settings {
-        window: window::Settings {
+        window: iced::window::Settings {
             size: (400, 650),
-            ..window::Settings::default()
+            ..iced::window::Settings::default()
         },
         ..Settings::default()
     })
@@ -14,13 +15,16 @@ pub fn main() -> iced::Result {
 
 #[derive(Default)]
 struct Tocomple {
-    // text_input_state: text_input::State,
-    input_text: String,
+    input_text1: String,
+    input_text2: String,
+    button_state1: button::State,
 }
 
 #[derive(Debug, Clone)]
 enum Message {
-    TextInputChanged(String),
+    TextInputChanged1(String),
+    TextInputChanged2(String),
+    ButtonClicked,
 }
 
 impl Sandbox for Tocomple {
@@ -36,22 +40,42 @@ impl Sandbox for Tocomple {
 
     fn update(&mut self, message: Message) {
         match message {
-            Message::TextInputChanged(text) => {
-                self.input_text = text;
+            Message::TextInputChanged1(text) => {
+                self.input_text1 = text;
+            }
+            Message::TextInputChanged2(text) => {
+                self.input_text2 = text;
+            }
+            Message::ButtonClicked => {
+                println!("Input 1: {}", self.input_text1);
+                println!("Input 2: {}", self.input_text2);
             }
         }
     }
 
     fn view(&self) -> Element<Message> {
-        let input = text_input("", &self.input_text)
-            .on_input(Message::TextInputChanged);
+        let textbox1 = text_input("", &self.input_text1)
+            .on_input(Message::TextInputChanged1);
+
+        let textbox2 = text_input("", &self.input_text2)
+            .on_input(Message::TextInputChanged2);;
+
+        let button =Button::new("Press me!").on_press(Message::ButtonClicked);
+
+        let content = Column::new()
+            .spacing(20)
+            .padding(40)
+            .push(textbox1)
+            .push(textbox2)
+            .push(button);
 
         scrollable(
-            container(input)
+            container(content)
                 .width(Length::Fill)
                 .padding(40)
                 .center_x(),
         )
             .into()
     }
+
 }
