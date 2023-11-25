@@ -60,7 +60,7 @@ impl Sandbox for Tocomple {
         let textbox2 = text_input("", &self.input_text2)
             .on_input(Message::TextInputChanged2);;
 
-        let button =Button::new("Press me!").on_press(Message::ButtonClicked);
+        let button =Button::new("DENTRAR").on_press(Message::ButtonClicked);
 
         let content = Column::new()
             .spacing(20)
